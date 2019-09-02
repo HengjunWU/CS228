@@ -1,3 +1,3 @@
-pygameWindowWidth = 1500
-pygameWindowDepth = 1500
+pygameWindowWidth = 1200
+pygameWindowDepth = 800
 circleVelocity = 20
