@@ -1,57 +1,52 @@
-import constants
 import sys
 import Leap
-from Leap import Finger
-from Leap import Bone
+
 from pygameWindow import PYGAME_WINDOW
-import random
 import pygame
 sys.path.insert(0, '..')
 
 x = 0
 y = 343
 
-xMin = -800
-xMax = 800
-yMin = 0
-yMax = 1200
-
-
-
-
-def Perturb_Circle_Position(x, y):
-    foursidedDieRoll = random.randint(1,4)
-    if foursidedDieRoll == 1:
-        x -= constants.circleVelocity
-    elif foursidedDieRoll == 2:
-        x += constants.circleVelocity
-    elif foursidedDieRoll == 3:
-        y -= constants.circleVelocity
-    else:
-        y += constants.circleVelocity
-    return [x, y]
+xMin = -300
+xMax = 300
+yMin = -300
+yMax = 300
 
 def Handle_Frame(frame):
     global xMin
     global xMax
     global yMin
     global yMax
-    # xMin = 1000.0
-    # xMax = -1000.0
-    # yMin = 1000.0
-    # yMax = -1000.0
 
-    #print(frame)
     hand = frame.hands[0]
-    #print(hand)
     fingers = hand.fingers
-    indexFingerList = fingers.finger_type(Finger.TYPE_INDEX)
-    indexFinger = indexFingerList[0]
-    distalPhalanx = indexFinger.bone(Bone.TYPE_DISTAL)
-    #print(distalPhalanx)
-    tip = distalPhalanx.next_joint
-    x = int(tip[0])
-    y = int(tip[1])
+    for finger in fingers:
+        Handle_Finger(finger)
+
+def Handle_Finger(finger):
+    for b in range(0,4):
+        Handle_Bone(b,finger)
+
+
+def Handle_Bone(b,finger):
+    bone = finger.bone(b)
+    base = bone.prev_joint
+    tip = bone.next_joint
+
+    [xBase,yBase] = Handle_Vector_From_Leap(base)
+    [xTip,yTip] = Handle_Vector_From_Leap(tip)
+
+    pygameWindow.Draw_Black_Line(xBase,yBase,xTip,yTip,b)
+
+def Handle_Vector_From_Leap(v):
+    global xMin
+    global xMax
+    global yMin
+    global yMax
+
+    x = int(v[0])
+    y = int(v[2])
     if (x < xMin):
         xMin = x
     if (x > xMax):
@@ -60,18 +55,11 @@ def Handle_Frame(frame):
         yMin = y
     if (y > yMax):
         yMax = y
-    return [x, y]
+    return x, y
 
 
 pygameWindow = PYGAME_WINDOW()
-print(pygameWindow)
-#debug = True
 
-    # global debug
-    # if not(frame.is_valid):
-    #     debug = True
-    # if(debug):
-    #     print(frame)
 
 
 run = True
@@ -80,19 +68,34 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
     pygameWindow.Prepare()
+
     controller = Leap.Controller()
     frame = controller.frame()
-    handlist = frame.hands
-    for hand in handlist:
-        # print str(hand)
-        [x, y] = Handle_Frame(frame)
 
-    pygameWindow.Draw_Black_Circle(x, y)
-    [x, y] = Perturb_Circle_Position(x, y)
-        # print(x,y)
+    handlist = frame.hands
+    if not handlist:
+        print "nothing"
+    else:
+        Handle_Frame(frame)
+
     pygameWindow.Reveal()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # if(handlist.is_empty):
     #     debug = True
