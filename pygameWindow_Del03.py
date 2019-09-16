@@ -22,14 +22,20 @@ class PYGAME_WINDOW:
     def Reveal(self):
         pygame.display.update()
 
-    def Draw_Black_Line(self,xBase,yBase,xTip,yTip,b):
+    def Draw_Line(self,xBase,yBase,xTip,yTip,b,color):
         xBase = self.ScaleX(xBase, -300, 300, 0, pygameWindowWidth)
         xTip = self.ScaleX(xTip, -300, 300, 0, pygameWindowWidth)
         yBase = self.ScaleY(yBase, -300, 300, 0, pygameWindowDepth)
         yTip = self.ScaleY(yTip, -300, 300, 0, pygameWindowDepth)
         # width = 4-b
-        pygame.draw.line(self.screen, (0,0,0), [xBase,yBase], [xTip,yTip], 4-b)
-        print xBase,xTip,yBase,yTip
+        if color == 1:
+            pygame.draw.line(self.screen, (0,128,0), [xBase,yBase], [xTip,yTip], 4-b)
+        if color == 2:
+            pygame.draw.line(self.screen, (255,0,0), [xBase,yBase], [xTip,yTip], 4-b)
+
+        # pygame.draw.line(self.screen, (0,0,0), [xBase,yBase], [xTip,yTip], 4-b)
+
+        # print xBase,xTip,yBase,yTip
 
     def Draw_Black_Circle(self, x, y):
         x = self.ScaleX(x, -1000, 1000, 0, pygameWindowWidth)
@@ -60,6 +66,3 @@ class PYGAME_WINDOW:
             print "The maximum data collection range for the Leap Motion device along the z-axis is > 1000. You have chosen a range of 0. Division by 0 is not possible."
         else:
             return int((1-1.75*(value / float(leapMax - leapMin))) * (windowEnd - windowStart))
-
-    # def getDebugStatus(self):
-    #     return self.debug
