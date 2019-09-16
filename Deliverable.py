@@ -31,11 +31,12 @@ class DELIVERABLE:
             self.Handle_Finger(finger)
 
         if self.Recording_Is_Ending():
+            print self.gestureData
             self.Save_Gesture()
 
     def Handle_Finger(self,finger):
-        for b in range(0, 4):
-            for i in range(0, 5):
+        for i in range(0, 5):
+            for b in range(0, 4):
                 self.Handle_Bone(b, finger, i)
 
     def Handle_Bone(self, b, finger, i):

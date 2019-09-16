@@ -5,8 +5,8 @@ from pygameWindow import PYGAME_WINDOW
 import pygame
 sys.path.insert(0, '..')
 
-x = 0
-y = 343
+# x = 0
+# y = 343
 
 xMin = -300
 xMax = 300
