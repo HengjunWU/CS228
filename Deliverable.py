@@ -21,6 +21,7 @@ class DELIVERABLE:
         self.currentNumberOfHands = 0
         self.previousNumberOfHands = 0
         self.gestureData = np.zeros((5, 4, 6), dtype=float)
+        self.numberOfFile = 0
 
 
     def Handle_Frame(self,frame):
@@ -38,6 +39,7 @@ class DELIVERABLE:
         for i in range(0, 5):
             for b in range(0, 4):
                 self.Handle_Bone(b, finger, i)
+        # self.numberOfFile += 1
 
     def Handle_Bone(self, b, finger, i):
         bone = finger.bone(b)
@@ -82,7 +84,10 @@ class DELIVERABLE:
             return True
 
     def Save_Gesture(self):
-        save_gesture = open("userData/gesture.p", "wb")
+        # for i in self.numberOfFile:
+            # file_list.append(FileData(path))
+        self.numberOfFile += 1
+        save_gesture = open("userData/gesture"+str(self.numberOfFile)+".p", "wb")
         pickle.dump(self.gestureData, save_gesture)
         save_gesture.close()
         # pass
