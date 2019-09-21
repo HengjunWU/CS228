@@ -2,10 +2,11 @@ import pygame
 from constants import *
 
 
-class PYGAME_WINDOW:
+class PYGAME_WINDOW_Del03:
 
     def __init__(self):
         pygame.init()
+        pygame.display.init()
         self.width = pygameWindowWidth
         self.depth = pygameWindowDepth
         self.screen = pygame.display.set_mode((pygameWindowWidth, pygameWindowDepth))
@@ -30,8 +31,11 @@ class PYGAME_WINDOW:
         # width = 4-b
         if color == 1:
             pygame.draw.line(self.screen, (0,128,0), [xBase,yBase], [xTip,yTip], 4-b)
-        if color == 2:
+        elif color == 2:
             pygame.draw.line(self.screen, (255,0,0), [xBase,yBase], [xTip,yTip], 4-b)
+        else:
+            pygame.draw.line(self.screen, (255,0,0), [xBase,yBase], [xTip,yTip], 4-b)
+
 
         # pygame.draw.line(self.screen, (0,0,0), [xBase,yBase], [xTip,yTip], 4-b)
 
@@ -39,7 +43,7 @@ class PYGAME_WINDOW:
 
     def Draw_Black_Circle(self, x, y):
         x = self.ScaleX(x, -1000, 1000, 0, pygameWindowWidth)
-        y = self.ScaleZ(y, 0, 1200, 0, pygameWindowDepth)
+        y = self.ScaleY(y, -1000, 1000, 0, pygameWindowDepth)
         pygame.draw.circle(self.screen, (0, 0, 0), (x, y), 45, 0)
         #print(x,y)
         #print(self.screen)
@@ -59,7 +63,8 @@ class PYGAME_WINDOW:
         if(leapMax == leapMin):
             print "The maximum data collection range for the Leap Motion device along the z-axis is > 1000. You have chosen a range of 0. Division by 0 is not possible."
         else:
-            return int(((value + (leapMax-leapMin)/2) / float(leapMax - leapMin)) * (windowEnd - windowStart))
+            return int(1/float(2)*(windowEnd - windowStart)-(value/float(leapMax - leapMin)*(windowEnd - windowStart)))
+            # return int(((value + (leapMax-leapMin)/2) / float(leapMax - leapMin)) * (windowEnd - windowStart)-1/float(2)*(windowEnd - windowStart))
 
     def ScaleZ(self, value, leapMin, leapMax, windowStart, windowEnd):
         if(leapMax == leapMin):
