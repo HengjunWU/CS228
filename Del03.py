@@ -7,12 +7,12 @@
 # import Deliverable
 # deliverable = Deliverable.DELIVERABLE()
 
+
 from Deliverable import DELIVERABLE
 
-deliverable = DELIVERABLE()
-deliverable.delete()
-deliverable.Run_Forever()
 
+deliverable = DELIVERABLE()
+deliverable.Run_Forever()
 
 
 #
