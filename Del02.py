@@ -1,10 +1,9 @@
 import sys
 import Leap
-
+import pickle
 from pygameWindow import PYGAME_WINDOW
 import pygame
 sys.path.insert(0, '..')
-
 # x = 0
 # y = 343
 

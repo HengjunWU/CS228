@@ -10,7 +10,7 @@ import shutil
 
 
 
-class DELIVERABLE:
+class RECORDER:
 
     def __init__(self):
         self.controller = Leap.Controller()
@@ -25,8 +25,10 @@ class DELIVERABLE:
         # self.numberOfHands = 0
         self.currentNumberOfHands = 0
         self.previousNumberOfHands = 0
-        self.gestureData = np.zeros((5, 4, 6), dtype='f')
-        self.numberOfFile = 0
+        # self.numberOfFile = 0
+        self.numberOfGestures = 1000
+        self.gestureIndex = 0
+        self.gestureData = np.zeros((5,4,6,self.numberOfGestures),dtype='f')
 
 
     def Handle_Frame(self,frame):
@@ -36,9 +38,16 @@ class DELIVERABLE:
         for finger in fingers:
             self.Handle_Finger(finger)
 
-        if self.Recording_Is_Ending():
+        # if self.Recording_Is_Ending():
             # print self.gestureData
-            self.Save_Gesture()
+        if self.currentNumberOfHands == 2:
+            print('gesture '+ str(self.gestureIndex) + ' stored.')
+            self.gestureIndex = self.gestureIndex + 1
+            if self.gestureIndex == self.numberOfGestures:
+                print self.gestureData[:,:,:,0]
+                print self.gestureData[:,:,:,99]
+                self.Save_Gesture()
+                exit(0)
 
     def Handle_Finger(self,finger):
         for b in range(0, 4):
@@ -50,10 +59,10 @@ class DELIVERABLE:
         bone = finger.bone(b)
         base = bone.prev_joint
         tip = bone.next_joint
-        print base, tip
+        # print base, tip
 
-        [xBase, yBase] = self.Handle_Vector_From_Leap(base)
-        [xTip, yTip] = self.Handle_Vector_From_Leap(tip)
+        [xBase, yBase, zBase] = self.Handle_Vector_From_Leap(base)
+        [xTip, yTip, zTip] = self.Handle_Vector_From_Leap(tip)
         # self.pygameWindow.Draw_Line(xBase, yBase, xTip, yTip, b)
         # print base,tip
         green = 1
@@ -62,14 +71,18 @@ class DELIVERABLE:
             self.pygameWindow.Draw_Line(xBase, yBase, xTip, yTip, b, green)
         elif self.currentNumberOfHands == 2:
             self.pygameWindow.Draw_Line(xBase, yBase, xTip, yTip, b, red)
-        # print base[0], base[1], base[2],tip[0],tip[1],tip[2]
-        if self.Recording_Is_Ending():
-            self.gestureData[i, b, 0] = base[0]
-            self.gestureData[i, b, 1] = base[1]
-            self.gestureData[i, b, 2] = base[2]
-            self.gestureData[i, b, 3] = tip[0]
-            self.gestureData[i, b, 4] = tip[1]
-            self.gestureData[i, b, 5] = tip[2]
+        # print base[0],base[1],base[2],tip[0],tip[1],tip[2]
+        if self.currentNumberOfHands == 2:
+        # if self.Recording_Is_Ending():
+            self.gestureData[i, b, 0, self.gestureIndex] = xBase
+            self.gestureData[i, b, 1, self.gestureIndex] = yBase
+            self.gestureData[i, b, 2, self.gestureIndex] = zBase
+            self.gestureData[i, b, 3, self.gestureIndex] = xTip
+            self.gestureData[i, b, 4, self.gestureIndex] = yTip
+            self.gestureData[i, b, 5, self.gestureIndex] = zTip
+            # print(self.gestureData[:, :, :, 0])
+            # print xBase,yBase
+            # exit()
             # print "i is ",i
             # print "b is ",b
             if self.debug:
@@ -85,6 +98,7 @@ class DELIVERABLE:
     def Handle_Vector_From_Leap(self, v):
         self.x = int(v[0])
         self.y = int(v[1])
+        self.z = int(v[2])
 
         if (self.x < self.xMin):
             self.x = self.xMin
@@ -94,7 +108,7 @@ class DELIVERABLE:
             self.y = self.yMin
         if (self.y > self.yMax):
             self.y = self.yMax
-        return self.x, self.y
+        return self.x, self.y, self.z
 
     def Recording_Is_Ending(self):
         if self.previousNumberOfHands > self.currentNumberOfHands:
@@ -104,8 +118,9 @@ class DELIVERABLE:
         # print self.gestureData
         if self.debug:
             print self.gestureData
-        self.numberOfFile += 1
-        save_gesture = open("userData/gesture"+str(self.numberOfFile-1)+".p", "wb")
+        # self.numberOfFile += 1
+        # save_gesture = open("userData/gesture"+str(self.numberOfFile-1)+".dat", "wb")
+        save_gesture = open("userData/gesture.p", "wb")
         pickle.dump(self.gestureData, save_gesture)
         save_gesture.close()
         # pass

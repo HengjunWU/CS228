@@ -29,7 +29,7 @@ class PYGAME_WINDOW:
         yTip = self.ScaleY(yTip, -300, 300, 0, pygameWindowDepth)
         # width = 4-b
         pygame.draw.line(self.screen, (0,0,0), [xBase,yBase], [xTip,yTip], 4-b)
-        print xBase,xTip,yBase,yTip
+        # print xBase,xTip,yBase,yTip
 
     def Draw_Black_Circle(self, x, y):
         x = self.ScaleX(x, -1000, 1000, 0, pygameWindowWidth)
@@ -43,6 +43,23 @@ class PYGAME_WINDOW:
     # def Draw_Black_Dot(self, value, leapMin, leapMax, windowStart, windowEnd):
     #     return int((leapMax-(value + (leapMax-leapMin)/2)) / float(leapMax - leapMin)) * (windowEnd - windowStart)
 
+    # def ScaleX(self, value, leapMin, leapMax, windowStart, windowEnd):
+    #     if(leapMax == leapMin):
+    #         print "The maximum data collection range for the Leap Motion device is > 2000. You have chosen a range of 0. Division by 0 is not possible."
+    #     else:
+    #         return (int(((value + (leapMax-leapMin)/2) / float(leapMax - leapMin)) * (windowEnd - windowStart)))
+    #
+    # def ScaleY(self, value, leapMin, leapMax, windowStart, windowEnd):
+    #     if(leapMax == leapMin):
+    #         print "The maximum data collection range for the Leap Motion device along the z-axis is > 1000. You have chosen a range of 0. Division by 0 is not possible."
+    #     else:
+    #         return int(((value + (leapMax-leapMin)/2) / float(leapMax - leapMin)) * (windowEnd - windowStart))
+    #
+    # def ScaleZ(self, value, leapMin, leapMax, windowStart, windowEnd):
+    #     if(leapMax == leapMin):
+    #         print "The maximum data collection range for the Leap Motion device along the z-axis is > 1000. You have chosen a range of 0. Division by 0 is not possible."
+    #     else:
+    #         return int((1-1.75*(value / float(leapMax - leapMin))) * (windowEnd - windowStart))
     def ScaleX(self, value, leapMin, leapMax, windowStart, windowEnd):
         if(leapMax == leapMin):
             print "The maximum data collection range for the Leap Motion device is > 2000. You have chosen a range of 0. Division by 0 is not possible."
@@ -53,13 +70,11 @@ class PYGAME_WINDOW:
         if(leapMax == leapMin):
             print "The maximum data collection range for the Leap Motion device along the z-axis is > 1000. You have chosen a range of 0. Division by 0 is not possible."
         else:
-            return int(((value + (leapMax-leapMin)/2) / float(leapMax - leapMin)) * (windowEnd - windowStart))
+            return int(1/float(2)*(windowEnd - windowStart)-(value/float(leapMax - leapMin)*(windowEnd - windowStart)))
+            # return int(((value + (leapMax-leapMin)/2) / float(leapMax - leapMin)) * (windowEnd - windowStart)-1/float(2)*(windowEnd - windowStart))
 
     def ScaleZ(self, value, leapMin, leapMax, windowStart, windowEnd):
         if(leapMax == leapMin):
             print "The maximum data collection range for the Leap Motion device along the z-axis is > 1000. You have chosen a range of 0. Division by 0 is not possible."
         else:
             return int((1-1.75*(value / float(leapMax - leapMin))) * (windowEnd - windowStart))
-
-    # def getDebugStatus(self):
-    #     return self.debug

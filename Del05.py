@@ -8,10 +8,11 @@
 # deliverable = Deliverable.DELIVERABLE()
 
 
-from Recorder import DELIVERABLE
+from Recorder import RECORDER
 
 
-deliverable = DELIVERABLE()
+deliverable = RECORDER()
+deliverable.delete()
 deliverable.Run_Forever()
 
 
