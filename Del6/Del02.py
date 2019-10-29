@@ -34,8 +34,8 @@ def Handle_Frame(frame):
             base = bone.prev_joint
             tip = bone.next_joint
 
-            [xBase,yBase,zBase] = Handle_Vector_From_Leap(base)
-            [xTip,yTip,zTip] = Handle_Vector_From_Leap(tip)
+            [xBase,zBase,yBase] = Handle_Vector_From_Leap(base)
+            [xTip,zTip,yTip] = Handle_Vector_From_Leap(tip)
             pygameWindow.Draw_Black_Line(xBase,yBase,xTip,yTip,b)
             if ((b == 0) or (b == 3)):
                 testData[0, k] = xTip

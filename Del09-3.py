@@ -37,12 +37,13 @@ k = 0
 e = 0
 
 w = 0.15
-num = random.randint(0, 9)
+# num = random.randint(0, 9)
+num = 0
 corrected = 0
 h = 27
 improved = 0
 switch = True
-switch2 = True
+switch2 = False
 switch3 = False
 opened = True
 
@@ -135,10 +136,12 @@ def HandleState1(handlist):
     global display1
     global m
     global k
+    global corrected
 
     # m = 0
     # t = 0
     k = 0
+    corrected = 0
 
     xBase_1 = pygameWindow.ScaleX(xBase, -200, 200, 0, 800)
     yBase_1 = pygameWindow.ScaleY(yBase, -200, 200, 0, 800)
@@ -205,10 +208,8 @@ def HandleState2(handlist):
     global corrected
     global t
     global switch
-    global switch1
     global switch2
     global switch3
-    global improved
     global opened
     global h
     global q
@@ -228,53 +229,32 @@ def HandleState2(handlist):
     if switch:
         Handle_Frame(frame)
     if (200<=xBase_1 and 0<=yBase_1) and (200<=xTip_1 and 0<=yTip_1):
-        if switch2:
-            print("switch2 :",switch2)
-            clock.tick()
-            graph = pygame.image.load('images/number{}.jpg'.format(num))
-            graph = pygame.transform.scale(graph, (400, 400))
-            pygameWindow.screen.blit(graph, (400, 0))
-            if opened:
-                graph = pygame.image.load('images/gesture{}.jpg'.format(num))
-                graph = pygame.transform.scale(graph, (400, 400))
-                pygameWindow.screen.blit(graph, (400, 400))
-
-            clock.tick()
-            q += clock.get_time() / 1000.0
-
-        if switch3:
-            print("switch3 :",switch3)
-            clock.tick()
-            graph = pygame.image.load('images/number{}.jpg'.format(num))
-            graph = pygame.transform.scale(graph, (400, 400))
-            pygameWindow.screen.blit(graph, (400, 0))
-            clock.tick()
-            e += clock.get_time() / 1000.0
-            print("e :" , e)
-            if e > 0.01:
-                graph = pygame.image.load('images/white.png')
-                graph = pygame.transform.scale(graph, (400, 400))
-                pygameWindow.screen.blit(graph, (400, 0))
-
+        clock.tick()
+        graph = pygame.image.load('images/number{}.jpg'.format(num))
+        graph = pygame.transform.scale(graph, (400, 400))
+        pygameWindow.screen.blit(graph, (400, 0))
+        graph = pygame.image.load('images/gesture{}.jpg'.format(num))
+        graph = pygame.transform.scale(graph, (400, 400))
+        pygameWindow.screen.blit(graph, (400, 400))
+        clock.tick()
+        q += clock.get_time() / 1000.0
         print("q :", q)
+
         testData_1 = CenterData(testData)
         predictedClass = clf.Predict(testData_1)
         print(predictedClass)
         if predictedClass == num:
             corrected+=1
-            print("corrected:", corrected)
-            if switch2:
-                if corrected >= 10 and q > w:
-                    improved += 1
-                    w -= 0.03
-                    Dict.userRecord['digit{}attempted'.format(num)] += 1
-                    pickle.dump(Dict.database, open('userData/database.p', 'wb'))
+            if q > w:
+                print("corrected:", corrected)
+                # w -= 0.03
+                if corrected>=20:
                     programState = 3
-            if switch3:
-                if corrected >= 10:
-                    Dict.userRecord['digit{}attempted'.format(num)] += 1
-                    pickle.dump(Dict.database, open('userData/database.p', 'wb'))
+                    w -= 0.01
+                    switch2 = True
+                else:
                     programState = 3
+                    switch3 = True
 
     elif not handlist:
         programState = 0
@@ -299,7 +279,7 @@ def HandleState3(handlist):
 
     q = 0
     e = 0
-    corrected = 0
+    # corrected = 0
     if switch:
         Handle_Frame(frame)
 
@@ -307,64 +287,50 @@ def HandleState3(handlist):
     # print("start is ", start)
 
     if display2:
-        clock.tick()
-        graph = pygame.image.load('images/good.jpeg'.format(num))
-        graph = pygame.transform.scale(graph, (400, 400))
-        # text1 = ""
-        # text2 = ""
-        # text3 = ""
-        # text4 = ""
-        # text5 = ""
-        #
-        # for s in range(0,10):
-        #     para = ('digit{}attempted').format(s)
-        #     if para in Dict.userRecord and 0<=s<=1:
-        #         text1 += ('digit{}attempted').format(s) + ":" + str(Dict.userRecord[para]) + ' '
-        #     elif para in Dict.userRecord and 2<=s<=3:
-        #         text2 += ('digit{}attempted').format(s) + ":" + str(Dict.userRecord[para]) + ' '
-        #     elif para in Dict.userRecord and 4<= s <= 5:
-        #         text3 += ('digit{}attempted').format(s) + ":" + str(Dict.userRecord[para]) + ' '
-        #     elif para in Dict.userRecord and 6<= s <= 7:
-        #         text4 += ('digit{}attempted').format(s) + ":" + str(Dict.userRecord[para]) + ' '
-        #     elif para in Dict.userRecord and 8<= s <= 9:
-        #         text5 += ('digit{}attempted').format(s) + ":" + str(Dict.userRecord[para]) + ' '
-        #
-        #
-        # # myfont = pygame.font.SysFont('Comic Sans MS', 20)
-        # myfont = pygame.font.SysFont('comicsansms', 28)
-        #
-        # t1 = myfont.render(text1, False, (0, 0, 0))
-        # t2 = myfont.render(text2, False, (0, 0, 0))
-        # t3 = myfont.render(text3, False, (0, 0, 0))
-        # t4 = myfont.render(text4, False, (0, 0, 0))
-        # t5 = myfont.render(text5, False, (0, 0, 0))
-        #
-        pygameWindow.screen.blit(graph, (400, 0))
-        # pygameWindow.screen.blit(t1, (0, 400))
-        # pygameWindow.screen.blit(t2, (0, 480))
-        # pygameWindow.screen.blit(t3, (0, 560))
-        # pygameWindow.screen.blit(t4, (0, 640))
-        # pygameWindow.screen.blit(t5, (0, 720))
+
         clock.tick()
 
-        # print(datetime.datetime.now() - start).total_seconds()
+        if switch2:
+            graph = pygame.image.load('images/good.jpeg'.format(num))
+            graph = pygame.transform.scale(graph, (400, 400))
+            pygameWindow.screen.blit(graph, (400, 0))
+            text1 = ""
+            text2 = ""
+            text1 += ('Digit {}').format(num) + " attempted " + str(corrected) + ' times'
+            text2 += 'It\'s more than or equal to 20 times. '
+            # # myfont = pygame.font.SysFont('Comic Sans MS', 20)
+            myfont = pygame.font.SysFont('comicsansms', 40)
+            t1 = myfont.render(text1, False, (0, 0, 0))
+            t2 = myfont.render(text2, False, (0, 0, 0))
+            pygameWindow.screen.blit(t1, (0, 400))
+            pygameWindow.screen.blit(t2, (0, 500))
+
+        if switch3:
+            graph = pygame.image.load('images/almost.jpeg'.format(num))
+            graph = pygame.transform.scale(graph, (400, 400))
+            pygameWindow.screen.blit(graph, (400, 0))
+            text1 = ""
+            text2 = ""
+            text1 += ('Digit {}').format(num) + " attempted " + str(corrected) + ' times'
+            text2 += 'It\'s less than 20 times. '
+        # # myfont = pygame.font.SysFont('Comic Sans MS', 20)
+            myfont = pygame.font.SysFont('comicsansms', 40)
+            t1 = myfont.render(text1, False, (0, 0, 0))
+            t2 = myfont.render(text2, False, (0, 0, 0))
+            pygameWindow.screen.blit(t1, (0, 400))
+            pygameWindow.screen.blit(t2, (0, 500))
+
+        clock.tick()
+
         k += clock.get_time() / 1000.0
         print("k :",k)
-        if k > 0.015:
-            # if improved >5:
-            #     if num != 9:
-            #         num+=1
-            #     else:
-            #         num = 0
-            # else:
-            if improved > 4:
-                opened = False
-                switch2 = False
-                switch3 = True
-                print(opened, switch2, switch3)
-            num = random.randint(0, 9)
+        if k > 0.05:
+            # num = random.randint(0, 9)
             # print("number is ",num)
             display2 = False
+            switch2 = False
+            switch3 = False
+            corrected = 0
             if handlist:
                 programState = 2
             elif not handlist:
